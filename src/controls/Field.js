@@ -1,5 +1,6 @@
+import React from 'react';
 
-class Field extends React.Component{
+export default class Field extends React.Component{
     constructor(props){
         super(props);
 

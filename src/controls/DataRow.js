@@ -1,18 +1,25 @@
+import React from 'react';
 
-class DataRow extends React.Component{
-    constructor(props){
+export default class DataRow extends React.Component {
+    constructor(props) {
         super(props);
 
         this.state = {
-            value: {props.value},
+            value: props.value,
+            active: props.active || false
         };
     }
 
-    render(){
-        const { value } = this.state;
+    handleClick = () => {
+        this.setState({ active: !this.state.active });
+    }
+
+    render() {
+        debugger;
+        const { value, active } = this.state;
         let columns = Object.keys(value);
 
-        return(<tr>
+        return (<tr onClick={this.handleClick} className={active ? 'table-active' : ''}>
             {columns.map(x => {
                 return <td>{value[x]}</td>
             })}

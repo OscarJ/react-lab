@@ -28,17 +28,17 @@ class App extends React.Component {
 
   handleClick = () => {
     let people = this.state.people;
-    people.push({
+    this.state.people.push({
       name: 'Andres',
       lastName: 'Gutierrez',
       id: '1123451012',
       city: 'San Rafael'
     });
-    this.setState({ people: people });
+    //this.setState({ people: people });
   }
 
   render() {
-    debugger;
+    
     const people = this.state.people;
     return (
       <div className="App">
@@ -63,7 +63,7 @@ class App extends React.Component {
             </thead>
             <tbody>
               {people.map(x => {
-                return (<DataRow value={x}></DataRow>);
+                return (<DataRow value={x} active={true}></DataRow>);
               })}
             </tbody>
           </table>
