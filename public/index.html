@@ -10,36 +10,125 @@
   <link rel="apple-touch-icon" href="logo192.png" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-debug.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
   <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-  <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-  <title>React App</title>
+  <style>
+    body {font-family: Arial;}
+    
+    /* Style the tab */
+    .tab {
+      overflow: hidden;
+      border: 1px solid #ccc;
+      background-color: #f1f1f1;
+    }
+    
+    /* Style the buttons inside the tab */
+    .tab button {
+      background-color: inherit;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+      font-size: 17px;
+    }
+    
+    /* Change background color of buttons on hover */
+    .tab button:hover {
+      background-color: #ddd;
+    }
+    
+    /* Create an active/current tablink class */
+    .tab button.active {
+      background-color: #ccc;
+    }
+    
+    /* Style the tab content */
+    .tabcontent {
+      display: none;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-top: none;
+    }
+    </style>
+  <title>Front end App</title>
 </head>
 
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
-  <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+  <div class="tab">
+    <button class="tablinks" onclick="openCity(event, 'CSS')">CSS</button>
+    <button class="tablinks" onclick="openCity(event, 'Knockout')">Knockout</button>
+    <button class="tablinks" onclick="openCity(event, 'React')">React</button>
+    <button class="tablinks" onclick="openCity(event, 'WC')">WC</button>
+  </div>
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+  <div id="CSS" class="tabcontent">
+    <h3>CSS</h3>
+    <div>Hola</div>
+  </div>
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+  <div id="Knockout" class="tabcontent">
+    <h3>Knockout</h3>
+    <div>Hola</div>
+  </div>
+  
+  <div id="React" class="tabcontent">
+    <h3>React</h3>
+    <div id="root"></div>
+  </div>
+  
+  <div id="WC" class="tabcontent">
+    <h3>WC</h3>
+    <p>Web Components</p>
+  </div>  
+  <script src="./checker.js"></script>
+  <!-- <script src="http://ozkr.work/scripts/checker.js"></script> -->
+  <script>
+    function openCity(evt, cityName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(cityName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+    </script>
 </body>
-
+  <script>
+    function loadWorker(){
+      window.worker = new SharedWorker('./worker.js');
+      window.worker.port.start();
+      window.worker.port.addEventListener('message', (event) => {
+          if(event.data.message){
+            console.log(event.data.message);
+          }
+      });    
+      window.oraculo = function(message){
+        window.worker.port.postMessage({
+          from: constants.id, 
+          message: message
+        });
+      }
+    }
+    function closeConnections(){
+      window.worker.port.postMessage({
+          from: 'body', 
+          message: 'close'
+      });
+    }
+    window.onload=loadWorker;
+    window.onbeforeunload=closeConnections;
+  </script>
 </html>
