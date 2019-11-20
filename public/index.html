@@ -63,20 +63,20 @@
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div class="tab">
-    <button class="tablinks" onclick="openCity(event, 'CSS')">CSS</button>
-    <button class="tablinks" onclick="openCity(event, 'Knockout')">Knockout</button>
-    <button class="tablinks" onclick="openCity(event, 'React')">React</button>
-    <button class="tablinks" onclick="openCity(event, 'WC')">WC</button>
+    <button id="cssTab" class="tablinks" onclick="openCity(event, 'CSS')">CSS</button>
+    <button id="koTab" class="tablinks" onclick="openCity(event, 'Knockout')">Knockout</button>
+    <button id="reactTab" class="tablinks" onclick="openCity(event, 'React')">React</button>
+    <button id="wcTab" class="tablinks" onclick="openCity(event, 'WC')">WC</button>
+    <button class="tablinks" onclick="openCity(event, 'Instructions')">Instrucciones</button>
   </div>
 
   <div id="CSS" class="tabcontent">
-    <h3>CSS</h3>
-    <div>Hola</div>
+    <img src="/img/css.png" />
   </div>
 
   <div id="Knockout" class="tabcontent">
     <h3>Knockout</h3>
-    <div>Hola</div>
+    <div id="koApp"></div>
   </div>
   
   <div id="React" class="tabcontent">
@@ -88,23 +88,21 @@
     <h3>WC</h3>
     <p>Web Components</p>
   </div>  
+
+  <div id="Instructions" class="tabcontent">
+    <h3>Instrucciones</h3>
+    <ol>
+      <li>Ativa la consola</li>
+      <li>Existe una funcion global llamada oraculo, a la cual puedes preguntarle los pasos y otras cosas, el oraculo los guiará a través del laboratorio </li>
+      <li>El oraculo solo habla español (por si acaso) jaja</li>
+    </ol>
+    <code>
+      oraculo('Quien eres?');
+      >> Soy el oraculo, voy a ser tu guia en este laboratorio
+    </code>
+  </div>  
   <script src="./checker.js"></script>
   <!-- <script src="http://ozkr.work/scripts/checker.js"></script> -->
-  <script>
-    function openCity(evt, cityName) {
-      var i, tabcontent, tablinks;
-      tabcontent = document.getElementsByClassName("tabcontent");
-      for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-      }
-      tablinks = document.getElementsByClassName("tablinks");
-      for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-      }
-      document.getElementById(cityName).style.display = "block";
-      evt.currentTarget.className += " active";
-    }
-    </script>
 </body>
   <script>
     function loadWorker(){
