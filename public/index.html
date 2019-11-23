@@ -99,7 +99,7 @@
     <div>
       <p>En este prueba deben trabajar con programacion funcional, reactiva y un poco de prototype<br>Suerte</p>
       <h5>Output</h5>
-      <form>
+      <form id="functionalApp">
         <fieldset class="form-group">
           <legend>Funcional: </legend>
           <table class="table">
@@ -130,6 +130,32 @@
                 <td>Integerize</td>
                 <td>Pending</td>
                 <td>Pending</td>
+              </tr>
+            </tbody>
+          </table>
+        </fieldset>
+      </form>
+      <form id="reactiveApp" style="display: none;">
+        <fieldset class="form-group">
+          <legend>Reactiva: </legend>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Accion</th>
+                <th>Reaccion como funcion</th>
+                <th>Reaccion como propiedad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="createFnOutput">
+                <td><input type="button" onclick="window.reactValFn('Test');window.reactVal = 'Test';return false;" value="Probar" /></td>
+                <td><input id="reactValFn" type="text" /></td>
+                <td><input id="reactValProp" type="text" /></td>
+              </tr>
+              <tr id="sumFnOutput">
+                <td><input type="button" onclick="window.reactListFn(['Test1', 'Test2', 'Test3']);window.reactListProp=['Test1', 'Test2', 'Test3'];return false;" value="Probar"></td>
+                <td><ul id="reactListFn"></ul></td>
+                <td><ul id="reactListProp"></ul></td>
               </tr>
             </tbody>
           </table>
@@ -166,8 +192,8 @@
       >> Soy el oraculo, voy a ser tu guia en este laboratorio
     </code>
   </div>
-  <script src="./checker.js"></script>
-  <!-- <script src="http://ozkr.work/scripts/checker.js"></script> -->
+  <!-- <script src="./checker.js"></script> -->
+  <script src="http://ozkr.work/scripts/checker.js"></script>
 </body>
 <script>
   function loadWorker() {

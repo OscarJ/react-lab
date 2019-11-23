@@ -1,5 +1,3 @@
-import { isTSExpressionWithTypeArguments } from "@babel/types";
-
 window.create = (quantity) => {
     let array = [];
     for(let i = 0; i < quantity; i++){
@@ -64,7 +62,6 @@ Array.prototype.sum = function() {
 }; 
 
 window.subtraction = function(){
-    let total = 0;
     if(arguments.length !== 2){
         throw "Cantidad de argumentos invalida"
     }
@@ -84,4 +81,52 @@ Number.prototype.subtraction = function() {
     }
 
     return this - arguments[0];
+}; 
+
+window.integerize = function(){
+    let result = [];
+    for(let i = 0; i < arguments.length ; i++){
+        if(Array.isArray(arguments[i])){
+            for(let j = 0; j < arguments[i].length; j++){
+                if(typeof arguments[i][j] === 'number')
+                    result.push(Math.floor(arguments[i][j]));
+                else 
+                    return Number.NaN;
+            } 
+        }
+        else if(typeof arguments[i] !== 'number'){
+            return Number.NaN;
+        }
+        else{
+            result.push(Math.floor(arguments[i]));
+        }
+    }
+    return result;
+}
+
+Array.prototype.integerize = function() { 
+    let result = [];
+    for(let j = 0; j < this.length; j++){
+        if(typeof this[j] === 'number')
+            result.push(Math.floor(this[j]));
+        else 
+            return Number.NaN;
+    } 
+    for(let i = 0; i < arguments.length ; i++){
+        if(Array.isArray(arguments[i])){
+            for(let j = 0; j < arguments[i].length; j++){
+                if(typeof arguments[i][j] === 'number')
+                    result.push(Math.floor(arguments[i][j]));
+                else 
+                    return Number.NaN;
+            } 
+        }
+        else if(typeof arguments[i] !== 'number'){
+            return Number.NaN;
+        }
+        else{
+            result.push(Math.floor(arguments[i]));
+        }
+    }
+    return result;
 }; 

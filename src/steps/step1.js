@@ -1,4 +1,3 @@
-    let image;
     fetch('http://ozkr.work/Home/GetImage').then(x => {
         let img = document.createElement("img");
         img.src = 'data:image/png;base64,' + x;
@@ -17,5 +16,5 @@
             }
         }
     ).then(x => {
-        console.log(x);
+        
     })

@@ -32,7 +32,26 @@ Object.defineProperty(stepsCompleted, 'step2', {
     },
     set: function (newVal) {
         step2Value = newVal;
-        testStep3();
+        document.getElementById("functionalApp").style.display = "none";
+        document.getElementById("reactiveApp").style.display = "block";
+        setTimeout(function () {
+            testStep3();
+        }, 1000);
+    }
+});
+
+Object.defineProperty(stepsCompleted, 'step3', {
+    get: function () {
+        return step2Value;
+    },
+    set: function (newVal) {
+        step2Value = newVal;
+        fnTab.style.display = "none";
+        koTab.style.display = "block";
+        koTab.click();
+        setTimeout(function () {
+            testStep4();
+        }, 1000);
     }
 });
 
@@ -101,11 +120,29 @@ function readMessage(message) {
                 worker.port.postMessage({ from: 'oracle', message: 'Paso 2: Todas las cosas solicitadas deben crearse a nivel global, osea su scope debe ser window' })
                 worker.port.postMessage({ from: 'oracle', message: '2.a: Crear una funcion llamada "create" que reciba un numero y cree un array de la cantidad indicada con numeros enteros aleatorios' });
                 worker.port.postMessage({ from: 'oracle', message: '2.b: Crear una funcion llamada "sum" que reciba "n" parametros y los sume, dichos parametros pueden ser numeros o array de numeros, el resultado debe ser un numero' });
-                worker.port.postMessage({ from: 'oracle', message: '2.c: Crear una funcion llamada "subtraction" que reciba 2 parametros y los reste, el resultado debe ser un numero' });
+                worker.port.postMessage({ from: 'oracle', message: '2.c: Crear una funcion llamada "subtraction" que reciba 2 parametros(tipo numero) y los reste, el resultado debe ser un numero' });
                 worker.port.postMessage({ from: 'oracle', message: '2.d: Crear una funcion llamada "integerize" que reciba "n" parametros y los convierte en enteros usando la funcion "floor" y los concatena y los devuelve en un solo array' });
+                worker.port.postMessage({ from: 'oracle', message: 'Nota: Si hiciste las funciones bien podrias correr ejecutar esto window.subtraction(window.sum(window.create(10)), window.sum(window.integerize([0.5,1.2,1/2],0.5)))' });
             }
             else {
                 worker.port.postMessage({ from: 'oracle', message: 'No has completado el paso 1' })
+            }
+        }
+        else if (questionPart.step.paso3) {
+            if (stepsCompleted.step2) {
+                worker.port.postMessage({ from: 'oracle', message: 'Paso 3: Todas las cosas solicitadas deben crearse a nivel global, osea su scope debe ser window' });
+                worker.port.postMessage({ from: 'oracle', message: '3.a: Crear una funcion llamada "reactValFn" que reciba un valor y automaticamente lo despliegue en el input[id=reactValFn]' });
+                worker.port.postMessage({ from: 'oracle', message: '     Y si se escribe en el textbox debe actualizar el val de dicha funcion cuando se llama sin parametros reactValFn() => el valor que tiene el textbox' });
+                worker.port.postMessage({ from: 'oracle', message: '3.b: Crear una funcion llamada "reactListFn" que reciba un array de strings y automaticamente lo despliegue como li\'s en el ul[id=reactListFn]' });
+                worker.port.postMessage({ from: 'oracle', message: ' ... -> ...' });
+                worker.port.postMessage({ from: 'oracle', message: 'Y para finalizar haganlo como property' });
+                worker.port.postMessage({ from: 'oracle', message: 'Una propiedad llamada reactValProp que actualice el input[id=reactValProp]' });
+                worker.port.postMessage({ from: 'oracle', message: 'Y una propiedad llamada reactListProp que actualice el ul[id=reactListProp]' });
+                worker.port.postMessage({ from: 'oracle', message: 'Suerte!!!' });
+
+            }
+            else {
+                worker.port.postMessage({ from: 'oracle', message: 'No has completado el paso 2' });
             }
         }
         else if (questionPart.noun.instruction) {
@@ -224,10 +261,14 @@ function openCity(evt, cityName) {
 
 function testStep2() {
     let array = window.create ? window.create(100) : undefined;
+    let step2 = true;
     if (array) {
         let createRow = document.getElementById("createFnOutput");
         if (testCreate(array, 100)) {
             createRow.cells[1].innerHTML = 'Done';
+        }
+        else {
+            step2 = step2 && false;
         }
         let arrayProt = [];
         if (arrayProt.create) {
@@ -241,6 +282,9 @@ function testStep2() {
             if (testSum(sum)) {
                 sumRow.cells[1].innerHTML = 'Done';
             }
+            else {
+                step2 = step2 && false;
+            }
             let arrayProt = [];
             if (arrayProt.sum) {
                 if (testSum()) {
@@ -248,12 +292,17 @@ function testStep2() {
                 }
             }
         }
+        else {
+            step2 = step2 && false;
+        }
         let subtraction = window.subtraction ? window.subtraction : undefined;
         if (subtraction) {
             let subtractionRow = document.getElementById("substractionFnOutput");
-            debugger;
             if (testSub(subtraction)) {
                 subtractionRow.cells[1].innerHTML = 'Done';
+            }
+            else {
+                step2 = step2 && false;
             }
             let numberProt = 0;
             if (numberProt.subtraction) {
@@ -262,6 +311,35 @@ function testStep2() {
                 }
             }
         }
+        else {
+            step2 = step2 && false;
+        }
+        let integerize = window.integerize ? window.integerize : undefined;
+        if (integerize) {
+            let integerizeRow = document.getElementById("intFnOutput");
+            if (testIntegerize(integerize)) {
+                integerizeRow.cells[1].innerHTML = 'Done';
+            }
+            else {
+                step2 = step2 && false;
+            }
+            let numberProt = [];
+            if (numberProt.integerize) {
+                if (testIntegerize()) {
+                    integerizeRow.cells[2].innerHTML = 'Done';
+                }
+            }
+        }
+        else {
+            step2 = step2 && false;
+        }
+    }
+    else {
+        step2 = step2 && false;
+    }
+    if (step2) {
+        console.log('Paso 2: superado')
+        stepsCompleted.step2 = true;
     }
 }
 
@@ -300,13 +378,54 @@ function testSub(fn) {
     catch (e) {
         testPassed = true;
     }
-    let total = fn ? fn(15,5) : quince.subtraction(5);
+    let total = fn ? fn(15, 5) : quince.subtraction(5);
 
     return testPassed && total === 10;
 }
 
+function testIntegerize(fn) {
+    testPassed = false;
+    let quince = [0.5, 1.2, 0.75];
+    try {
+        let array = fn ? fn([0.5, 1.2, 0.75]) : quince.integerize();
+        testPassed = array.filter(x => Number.isInteger(x)).length == 3;
+    }
+    catch (e) {
+        testPassed = true;
+    }
+
+    return testPassed;
+}
+
 function testStep3() {
 
+    let stepCompleted = false;
+    if (typeof window.reactValFn === 'function') {
+        stepCompleted = true;
+        window.reactValFn('Test 123 ');
+        let reactValFn = document.getElementById('reactValFn');
+        stepCompleted = stepCompleted && reactValFn.value === 'Test 123 ';
+
+        window.reactValProp = 'Test 123 ';
+        let reactValProp = document.getElementById('reactValProp');
+        stepCompleted = stepCompleted && reactValProp.value === 'Test 123 ';
+    }
+    if (typeof window.reactListFn === 'function') {
+        window.reactListFn(['Test 1', 'Test 2']);
+        let reactListFn = document.getElementById('reactListFn');
+        stepCompleted = stepCompleted && reactListFn.childNodes.length === 2;
+
+        window.reactListProp = ['Test 1', 'Test 2'];
+        let reactListProp = document.getElementById('reactListProp');
+        stepCompleted = stepCompleted && reactListProp.childNodes.length === 2;
+    }
+    if (stepCompleted) {
+        console.log('Paso 3: superado')
+        stepsCompleted.step3 = true;
+    }
+}
+
+function testStep4() {
 }
 
 (function () {
@@ -332,7 +451,8 @@ function testStep3() {
                     fnTab.style.display = 'block';
                     stepsCompleted.step1 = true;
                     fnTab.click();
-                    resolve('Bien, step 1 superado');
+                    console.log('Paso 1: superado')
+                    resolve('Bien, paso 1 superado');
                 }
                 else {
                     reject('You are not authorized');
