@@ -6,19 +6,43 @@ let ids = {
     }
 };//['112570842','303920242'];
 let worker = new SharedWorker('./worker.js');
-let stepsCompleted ={
-  step1: false,
-  step2: false,
-  step3: false,
-  step4: false,
-  step5: false  
+let stepsCompleted = {
+
 };
+
+let step1Value = false,
+    step2Value = false,
+    step3Value = false;
+
+Object.defineProperty(stepsCompleted, 'step1', {
+    get: function () {
+        return step1Value;
+    },
+    set: function (newVal) {
+        step1Value = newVal;
+        setTimeout(function () {
+            testStep2();
+        }, 1000);
+    }
+});
+
+Object.defineProperty(stepsCompleted, 'step2', {
+    get: function () {
+        return step2Value;
+    },
+    set: function (newVal) {
+        step2Value = newVal;
+        testStep3();
+    }
+});
+
 worker.port.start();
 
 let cssTab = document.getElementById('cssTab');
 let koTab = document.getElementById('koTab');
 let reactTab = document.getElementById('reactTab');
 let wcTab = document.getElementById('wcTab');
+let fnTab = document.getElementById('fnTab');
 
 worker.port.addEventListener('message', (event) => {
     if (event.data && event.data.from === 'oracle') {
@@ -59,6 +83,9 @@ function readMessage(message) {
     else if (questionPart.wh.como && questionPart.pronoun.you && questionPart.verb.llamar) {
         worker.port.postMessage({ from: 'oracle', message: 'No tengo nombre, solo existo' });
     }
+    else if (questionPart.wh.como && questionPart.verb.hacer && questionPart.noun.baby) {
+        worker.port.postMessage({ from: 'oracle', message: 'Visite aca -> http://jessicagomezautora.com/mama-como-se-hacen-los-bebes/' })
+    }
     else if (questionPart.wh.que && questionPart.verb.hacer) {
         worker.port.postMessage({ from: 'oracle', message: 'Todo lo que yo te indique, pideme instrucciones' })
     }
@@ -67,13 +94,17 @@ function readMessage(message) {
     }
     else if ((questionPart.verb.querer || questionPart.verb.dar)) {
         if (questionPart.step.paso1) {
-            worker.port.postMessage({ from: 'oracle', message: 'Paso 1: ' })
+            worker.port.postMessage({ from: 'oracle', message: 'Paso 1: Hacer un Get a http://ozkr.work/Home/GetImage' })
         }
         else if (questionPart.step.paso2) {
-            if(stepsCompleted.step1){
-                worker.port.postMessage({ from: 'oracle', message: 'Paso 2: Debes crear un ViewModel de knockout y hacerle applybindings al elemento koApp' })
+            if (stepsCompleted.step1) {
+                worker.port.postMessage({ from: 'oracle', message: 'Paso 2: Todas las cosas solicitadas deben crearse a nivel global, osea su scope debe ser window' })
+                worker.port.postMessage({ from: 'oracle', message: '2.a: Crear una funcion llamada "create" que reciba un numero y cree un array de la cantidad indicada con numeros enteros aleatorios' });
+                worker.port.postMessage({ from: 'oracle', message: '2.b: Crear una funcion llamada "sum" que reciba "n" parametros y los sume, dichos parametros pueden ser numeros o array de numeros, el resultado debe ser un numero' });
+                worker.port.postMessage({ from: 'oracle', message: '2.c: Crear una funcion llamada "subtraction" que reciba 2 parametros y los reste, el resultado debe ser un numero' });
+                worker.port.postMessage({ from: 'oracle', message: '2.d: Crear una funcion llamada "integerize" que reciba "n" parametros y los convierte en enteros usando la funcion "floor" y los concatena y los devuelve en un solo array' });
             }
-            else{
+            else {
                 worker.port.postMessage({ from: 'oracle', message: 'No has completado el paso 1' })
             }
         }
@@ -136,6 +167,7 @@ function divideQuestion(message) {
             christhmas: false,
             bday: false,
             instruction: false,
+            baby: false
         },
         pronoun: {
             me: false,
@@ -151,7 +183,7 @@ function divideQuestion(message) {
     questionPart.wh.que = parts.includes('que');
 
     questionPart.verb.ser = parts.includes('sos') || parts.includes('eres') || parts.includes('es');
-    questionPart.verb.hacer = parts.includes('hacer') || parts.includes('hago');
+    questionPart.verb.hacer = parts.includes('hacer') || parts.includes('hago') || parts.includes('hacen');
     questionPart.verb.preguntar = parts.includes('preguntar') || parts.includes('pregunto');
     questionPart.verb.pedir = parts.includes('pedir') || parts.includes('pido');
     questionPart.verb.dar = parts.includes('dame') || parts.includes('dar') || parts.includes('deme');
@@ -169,6 +201,7 @@ function divideQuestion(message) {
     questionPart.noun.christhmas = parts.includes('navidad');
     questionPart.noun.bday = parts.includes('cumpleaños');
     questionPart.noun.instruction = parts.includes('instruccion') || parts.includes('instrucciones');
+    questionPart.noun.baby = parts.includes('bebes') || parts.includes('bebe');
 
     questionPart.pronoun.me = parts.includes('me') || parts.includes('mi');
     questionPart.pronoun.you = parts.includes('te') || parts.includes('tu');
@@ -189,11 +222,99 @@ function openCity(evt, cityName) {
     evt.currentTarget.className += " active";
 }
 
+function testStep2() {
+    let array = window.create ? window.create(100) : undefined;
+    if (array) {
+        let createRow = document.getElementById("createFnOutput");
+        if (testCreate(array, 100)) {
+            createRow.cells[1].innerHTML = 'Done';
+        }
+        let arrayProt = [];
+        if (arrayProt.create) {
+            if (testCreate(arrayProt.create(100), 100)) {
+                createRow.cells[2].innerHTML = 'Done';
+            }
+        }
+        let sum = window.sum ? window.sum : undefined;
+        if (sum) {
+            let sumRow = document.getElementById("sumFnOutput");
+            if (testSum(sum)) {
+                sumRow.cells[1].innerHTML = 'Done';
+            }
+            let arrayProt = [];
+            if (arrayProt.sum) {
+                if (testSum()) {
+                    sumRow.cells[2].innerHTML = 'Done';
+                }
+            }
+        }
+        let subtraction = window.subtraction ? window.subtraction : undefined;
+        if (subtraction) {
+            let subtractionRow = document.getElementById("substractionFnOutput");
+            debugger;
+            if (testSub(subtraction)) {
+                subtractionRow.cells[1].innerHTML = 'Done';
+            }
+            let numberProt = 0;
+            if (numberProt.subtraction) {
+                if (testSub()) {
+                    subtractionRow.cells[2].innerHTML = 'Done';
+                }
+            }
+        }
+    }
+}
+
+function testCreate(array, len) {
+    let isInteger = true;
+    for (let i = 0; i < array.length; i++) {
+        isInteger = isInteger && Number.isInteger(array[i]);
+    }
+    return array.length === len && isInteger;
+}
+
+function testSum(fn) {
+    let testPassed = false;
+    try {
+        let total = fn ? fn(["asf", 1, true]) : ["asf", 1, true].sum();
+        testPassed = Number.isNaN(total) ? true : false;
+    }
+    catch (e) {
+        testPassed = true;
+    }
+    {
+        let total = fn ? fn([1, 2, 3], [5, 6], 7) : [1, 2, 3].sum([5, 6], 7);
+        testPassed = testPassed && total === 24;
+    }
+
+    return testPassed;
+}
+
+function testSub(fn) {
+    testPassed = false;
+    let quince = 15;
+    try {
+        let total = fn ? fn(15, 7, 1, 2) : quince.subtraction();
+        testPassed = Number.isNaN(total) ? true : false;
+    }
+    catch (e) {
+        testPassed = true;
+    }
+    let total = fn ? fn(15,5) : quince.subtraction(5);
+
+    return testPassed && total === 10;
+}
+
+function testStep3() {
+
+}
+
 (function () {
     cssTab.click();
     koTab.style.display = "none";
     reactTab.style.display = "none";
     wcTab.style.display = "none";
+    fnTab.style.display = "none";
 
     let mockFetch = fetch;
     fetch = function (url, request) {
@@ -208,11 +329,12 @@ function openCity(evt, cityName) {
         else if (request.method.toLowerCase() === 'post') {
             let response = new Promise((resolve, reject) => {
                 if (request.headers.id && request.headers.name && request.headers.lastname) {
-                    koTab.style.display = 'block';
+                    fnTab.style.display = 'block';
                     stepsCompleted.step1 = true;
+                    fnTab.click();
                     resolve('Bien, step 1 superado');
                 }
-                else{
+                else {
                     reject('You are not authorized');
                 }
             });

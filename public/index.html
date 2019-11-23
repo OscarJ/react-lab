@@ -18,15 +18,17 @@
     -->
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
   <style>
-    body {font-family: Arial;}
-    
+    body {
+      font-family: Arial;
+    }
+
     /* Style the tab */
     .tab {
       overflow: hidden;
       border: 1px solid #ccc;
       background-color: #f1f1f1;
     }
-    
+
     /* Style the buttons inside the tab */
     .tab button {
       background-color: inherit;
@@ -38,17 +40,17 @@
       transition: 0.3s;
       font-size: 17px;
     }
-    
+
     /* Change background color of buttons on hover */
     .tab button:hover {
       background-color: #ddd;
     }
-    
+
     /* Create an active/current tablink class */
     .tab button.active {
       background-color: #ccc;
     }
-    
+
     /* Style the tab content */
     .tabcontent {
       display: none;
@@ -56,7 +58,24 @@
       border: 1px solid #ccc;
       border-top: none;
     }
-    </style>
+
+    fieldset {
+      border: 1px groove #ddd !important;
+      padding: 0 1.4em 1.4em 1.4em !important;
+      margin: 0 0 1.5em 0 !important;
+      -webkit-box-shadow: 0px 0px 0px 0px #000;
+      box-shadow: 0px 0px 0px 0px #000;
+    }
+
+    legend {
+      font-size: 1.2em !important;
+      font-weight: bold !important;
+      text-align: left !important;
+      width: auto;
+      padding: 0 10px;
+      border-bottom: none;
+    }
+  </style>
   <title>Front end App</title>
 </head>
 
@@ -64,6 +83,7 @@
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div class="tab">
     <button id="cssTab" class="tablinks" onclick="openCity(event, 'CSS')">CSS</button>
+    <button id="fnTab" class="tablinks" onclick="openCity(event, 'FnP')">Fx y Rx</button>
     <button id="koTab" class="tablinks" onclick="openCity(event, 'Knockout')">Knockout</button>
     <button id="reactTab" class="tablinks" onclick="openCity(event, 'React')">React</button>
     <button id="wcTab" class="tablinks" onclick="openCity(event, 'WC')">WC</button>
@@ -74,59 +94,105 @@
     <img src="/img/css.png" />
   </div>
 
+  <div id="FnP" class="tabcontent">
+    <h3>Programacion funcional y reactiva</h3>
+    <div>
+      <p>En este prueba deben trabajar con programacion funcional, reactiva y un poco de prototype<br>Suerte</p>
+      <h5>Output</h5>
+      <form>
+        <fieldset class="form-group">
+          <legend>Funcional: </legend>
+          <table class="table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Funcional</th>
+                <th>Prototyped</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="createFnOutput">
+                <td>Create</td>
+                <td>Pending</td>
+                <td>Pending</td>
+              </tr>
+              <tr id="sumFnOutput">
+                <td>Sum</td>
+                <td>Pending</td>
+                <td>Pending</td>
+              </tr>
+              <tr id="substractionFnOutput">
+                <td>Subtraction</td>
+                <td>Pending</td>
+                <td>Pending</td>
+              </tr>
+              <tr id="intFnOutput">
+                <td>Integerize</td>
+                <td>Pending</td>
+                <td>Pending</td>
+              </tr>
+            </tbody>
+          </table>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+
   <div id="Knockout" class="tabcontent">
     <h3>Knockout</h3>
     <div id="koApp"></div>
   </div>
-  
+
   <div id="React" class="tabcontent">
     <h3>React</h3>
     <div id="root"></div>
   </div>
-  
+
   <div id="WC" class="tabcontent">
     <h3>WC</h3>
     <p>Web Components</p>
-  </div>  
+  </div>
 
   <div id="Instructions" class="tabcontent">
     <h3>Instrucciones</h3>
     <ol>
       <li>Ativa la consola</li>
-      <li>Existe una funcion global llamada oraculo, a la cual puedes preguntarle los pasos y otras cosas, el oraculo los guiará a través del laboratorio </li>
+      <li>Existe una funcion global llamada oraculo, a la cual puedes preguntarle los pasos y otras cosas, el oraculo
+        los guiará a través del laboratorio </li>
       <li>El oraculo solo habla español (por si acaso) jaja</li>
     </ol>
     <code>
       oraculo('Quien eres?');
       >> Soy el oraculo, voy a ser tu guia en este laboratorio
     </code>
-  </div>  
+  </div>
   <script src="./checker.js"></script>
   <!-- <script src="http://ozkr.work/scripts/checker.js"></script> -->
 </body>
-  <script>
-    function loadWorker(){
-      window.worker = new SharedWorker('./worker.js');
-      window.worker.port.start();
-      window.worker.port.addEventListener('message', (event) => {
-          if(event.data.message){
-            console.log(event.data.message);
-          }
-      });    
-      window.oraculo = function(message){
-        window.worker.port.postMessage({
-          from: constants.id, 
-          message: message
-        });
+<script>
+  function loadWorker() {
+    window.worker = new SharedWorker('./worker.js');
+    window.worker.port.start();
+    window.worker.port.addEventListener('message', (event) => {
+      if (event.data.message) {
+        console.log(event.data.message);
       }
-    }
-    function closeConnections(){
+    });
+    window.oraculo = function (message) {
       window.worker.port.postMessage({
-          from: 'body', 
-          message: 'close'
+        from: constants.id,
+        message: message
       });
     }
-    window.onload=loadWorker;
-    window.onbeforeunload=closeConnections;
-  </script>
+  }
+  function closeConnections() {
+    window.worker.port.postMessage({
+      from: 'body',
+      message: 'close'
+    });
+  }
+  window.onload = loadWorker;
+  window.onbeforeunload = closeConnections;
+</script>
+
 </html>
